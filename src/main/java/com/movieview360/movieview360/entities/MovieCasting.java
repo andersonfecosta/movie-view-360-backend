@@ -1,10 +1,11 @@
 package com.movieview360.movieview360.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"movie_id", "casting_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"movie_id", "casting_id"}),name = "tb_movie_casting")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,10 +17,12 @@ public class MovieCasting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "casting_id", nullable = false)
     private Casting casting;

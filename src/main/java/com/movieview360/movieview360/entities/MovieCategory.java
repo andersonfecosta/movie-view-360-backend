@@ -1,5 +1,7 @@
 package com.movieview360.movieview360.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_categories")
+@Table(name = "tb_category")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,6 +24,7 @@ public class MovieCategory {
     @Column(nullable = false)
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Movie> movies = new ArrayList<>();
 
