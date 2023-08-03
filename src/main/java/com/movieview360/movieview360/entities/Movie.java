@@ -1,7 +1,6 @@
 package com.movieview360.movieview360.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,7 +30,7 @@ public class Movie {
     @Column(nullable = false)
     private Integer releaseDate;
 
-
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private MovieCategory gender;
@@ -42,8 +41,8 @@ public class Movie {
     @Column(nullable = false)
     private boolean isFavorite;
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieCasting> castings;
+    private List<MovieCasting> castings = new ArrayList<>();
 
 }

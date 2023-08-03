@@ -3,6 +3,7 @@ package com.movieview360.movieview360.controllers;
 
 import com.movieview360.movieview360.entities.Casting;
 import com.movieview360.movieview360.repositories.CastingRepository;
+import com.movieview360.movieview360.request.CastingRequest;
 import com.movieview360.movieview360.services.CastingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,12 +34,20 @@ public class CastingController {
         }
     }
 
+    public Casting convertCasting(CastingRequest castingRequest) {
+        Casting casting = new Casting();
+        casting.setName(castingRequest.getName());
+        casting.setPhotoUrl(castingRequest.getPhotoUrl());
+        return casting;
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Casting> createCastings(@RequestBody List<Casting> castings) {
+    public List<Casting> createCastings(@RequestBody List<CastingRequest> castingRequests) {
         List<Casting> createdCastings = new ArrayList<>();
 
-        for (Casting casting : castings) {
+        for (CastingRequest castingRequest : castingRequests) {
+            Casting casting = convertCasting(castingRequest);
             Casting savedCasting = castingService.createCasting(casting);
             createdCastings.add(savedCasting);
         }

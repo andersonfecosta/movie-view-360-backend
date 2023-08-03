@@ -1,7 +1,9 @@
 package com.movieview360.movieview360.controllers;
 
 import com.movieview360.movieview360.entities.MovieCasting;
+import com.movieview360.movieview360.services.CastingService;
 import com.movieview360.movieview360.services.MovieCastingService;
+import com.movieview360.movieview360.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +16,17 @@ import java.util.List;
 @RequestMapping(value = "/movie-castings")
 public class MovieCastingController {
 
-    @Autowired
-    private MovieCastingService movieCastingService;
+    private final MovieCastingService movieCastingService;
+    private final CastingService castingService;
+    private final MovieService movieService;
+
+    public MovieCastingController(MovieCastingService movieCastingService, CastingService castingService, MovieService movieService) {
+        this.movieCastingService = movieCastingService;
+        this.castingService = castingService;
+        this.movieService = movieService;
+    }
+
+
 
     @GetMapping
     public List<MovieCasting> getAllMovieCastings() {
