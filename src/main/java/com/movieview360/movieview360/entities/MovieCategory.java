@@ -22,10 +22,10 @@ public class MovieCategory {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String description;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "gender")
     private List<Movie> movies = new ArrayList<>();
 
 

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,9 +35,16 @@ public class MovieCategoryController {
         }
     }
     @PostMapping
-    public ResponseEntity<MovieCategory> createMovieCategory(@RequestBody MovieCategory movieCategory) {
-        MovieCategory createdMovieCategory = movieCategoryService.createMovieCategory(movieCategory);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdMovieCategory);
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<MovieCategory> createMovieCategories(@RequestBody List<MovieCategory> categories) {
+        List<MovieCategory> createdCategories = new ArrayList<>();
+
+        for (MovieCategory category : categories) {
+            MovieCategory savedCategory = movieCategoryService.createMovieCategory(category);
+            createdCategories.add(savedCategory);
+        }
+
+        return createdCategories;
     }
     @PutMapping("/{id}")
     public ResponseEntity<MovieCategory> updateMovieCategory(@PathVariable Long id, @RequestBody MovieCategory updatedMovieCategory) {

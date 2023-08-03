@@ -28,7 +28,7 @@ public class MovieCategoryService {
     public MovieCategory updateMovieCategory(Long id, MovieCategory updatedMovieCategory) {
         MovieCategory movieCategory = movieCategoryRepository.findById(id).orElse(null);
         if (movieCategory != null) {
-            movieCategory.setName(updatedMovieCategory.getName());
+            movieCategory.setDescription(updatedMovieCategory.getDescription());
             return movieCategoryRepository.save(movieCategory);
         }
         return null;

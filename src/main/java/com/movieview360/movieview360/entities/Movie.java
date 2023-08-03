@@ -29,12 +29,18 @@ public class Movie {
     private String description;
 
     @Column(nullable = false)
-    private Integer releaseYear;
+    private Integer releaseDate;
 
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private MovieCategory category;
+    private MovieCategory gender;
+
+    @Column(nullable = false)
+    private String imgUrl;
+
+    @Column(nullable = false)
+    private boolean isFavorite;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)

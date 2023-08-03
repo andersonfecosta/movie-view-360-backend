@@ -19,4 +19,7 @@ public class Casting {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String photoUrl;
+
 }

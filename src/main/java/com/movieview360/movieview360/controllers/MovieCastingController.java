@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,9 +33,16 @@ public class MovieCastingController {
     }
 
     @PostMapping
-    public ResponseEntity<MovieCasting> createMovieCasting(@RequestBody MovieCasting movieCasting) {
-        MovieCasting createdMovieCasting = movieCastingService.createMovieCasting(movieCasting);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdMovieCasting);
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<MovieCasting> createMovieCastings(@RequestBody List<MovieCasting> castings) {
+        List<MovieCasting> createdCastings = new ArrayList<>();
+
+        for (MovieCasting casting : castings) {
+            MovieCasting savedCasting = movieCastingService.createMovieCasting(casting);
+            createdCastings.add(savedCasting);
+        }
+
+        return createdCastings;
     }
 
     @PutMapping("/{id}")

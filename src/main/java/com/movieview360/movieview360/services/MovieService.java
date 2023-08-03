@@ -34,8 +34,8 @@ public class MovieService {
         if (movie != null) {
             movie.setTitle(updatedMovie.getTitle());
             movie.setDescription(updatedMovie.getDescription());
-            movie.setReleaseYear(updatedMovie.getReleaseYear());
-            movie.setCategory(updatedMovie.getCategory());
+            movie.setReleaseDate(updatedMovie.getReleaseDate());
+            movie.setGender(updatedMovie.getGender());
             movie.setCastings(updatedMovie.getCastings());
             return movieRepository.save(movie);
         }
