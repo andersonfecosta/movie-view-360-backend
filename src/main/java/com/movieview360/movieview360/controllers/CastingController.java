@@ -25,6 +25,7 @@ public class CastingController {
         return castingService.getAllCastings();
     }
 
+    @GetMapping("/{id}")
     public ResponseEntity<Casting> getCastingById(@PathVariable Long id) {
         Casting casting = castingService.getCastingById(id);
         if (casting != null) {
