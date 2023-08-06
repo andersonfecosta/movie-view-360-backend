@@ -1,7 +1,7 @@
 package com.movieview360.movieview360.entities;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 @Entity
