@@ -40,8 +40,8 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
-        Movie movie = movieService.getMovieById(id);
+    public ResponseEntity<MovieRequest> getMovieById(@PathVariable Long id) {
+        MovieRequest movie = movieService.getMovieRequestById(id);
         if (movie != null) {
             return ResponseEntity.ok(movie);
         } else {
@@ -49,8 +49,8 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/by-category/{categoryId}")
-    public ResponseEntity<List<Movie>> getMoviesByCategoryId(@PathVariable Long categoryId) {
+    @GetMapping("/by-gender")
+    public ResponseEntity<List<Movie>> getMoviesByCategoryId(@RequestParam("categoryId") Long categoryId) {
         List<Movie> movies = movieService.getMoviesByCategoryId(categoryId);
 
         if (!movies.isEmpty()) {
