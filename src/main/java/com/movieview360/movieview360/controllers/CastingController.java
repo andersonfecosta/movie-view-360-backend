@@ -2,7 +2,6 @@ package com.movieview360.movieview360.controllers;
 
 
 import com.movieview360.movieview360.entities.Casting;
-import com.movieview360.movieview360.repositories.CastingRepository;
 import com.movieview360.movieview360.request.CastingRequest;
 import com.movieview360.movieview360.services.CastingService;
 import org.springframework.beans.factory.annotation.Autowired;

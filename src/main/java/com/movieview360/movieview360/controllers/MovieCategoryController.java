@@ -2,8 +2,6 @@ package com.movieview360.movieview360.controllers;
 
 
 import com.movieview360.movieview360.entities.MovieCategory;
-import com.movieview360.movieview360.repositories.MovieCategoryRepository;
-import com.movieview360.movieview360.services.MovieCastingService;
 import com.movieview360.movieview360.services.MovieCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

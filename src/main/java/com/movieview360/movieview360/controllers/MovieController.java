@@ -49,13 +49,24 @@ public class MovieController {
         }
     }
 
+    @GetMapping("/by-category/{categoryId}")
+    public ResponseEntity<List<Movie>> getMoviesByCategoryId(@PathVariable Long categoryId) {
+        List<Movie> movies = movieService.getMoviesByCategoryId(categoryId);
+
+        if (!movies.isEmpty()) {
+            return ResponseEntity.ok(movies);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     private Movie convertToMovie(MovieRequest movieRequest) {
         Movie movie = new Movie();
         movie.setTitle(movieRequest.getTitle());
         movie.setDescription(movieRequest.getDescription());
         movie.setReleaseDate(movieRequest.getReleaseDate());
         movie.setImgUrl(movieRequest.getImgUrl());
-        movie.setFavorite(movieRequest.isFavorite());
+        //movie.setFavorite(movieRequest.isFavorite());
 
         MovieCategory movieCategory = new MovieCategory();
         movie.setGender(movieCategory);
@@ -77,7 +88,7 @@ public class MovieController {
             MovieCategory category = movieCategoryService.getMovieCategoryById(movieRequest.getGenderId());
             movie.setGender(category);
             movie.setImgUrl(movieRequest.getImgUrl());
-            movie.setFavorite(movieRequest.isFavorite());
+            //movie.setFavorite(movieRequest.isFavorite());
             movie = movieService.createMovie(movie);
 
             List<MovieCasting> castings = new ArrayList<>();
@@ -105,43 +116,6 @@ public class MovieController {
 
         return createdMovies;
     }
-
-
-    /*@PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<Movie> createMovies(@RequestBody List<MovieRequest> movieRequests) {
-        List<Movie> createdMovies = new ArrayList<>();
-
-        for (MovieRequest movieRequest : movieRequests) {
-            Movie movie = new Movie();
-            movie.setTitle(movieRequest.getTitle());
-            movie.setDescription(movieRequest.getDescription());
-            movie.setReleaseDate(movieRequest.getReleaseDate());
-
-            MovieCategory movieCategory = movieCategoryService.getMovieCategoryById(movieRequest.getGenderId());
-            movie.setGender(movieCategory);
-
-            movie.setImgUrl(movieRequest.getImgUrl());
-            movie.setFavorite(movieRequest.isFavorite());
-
-            List<MovieCasting> movieCastings = new ArrayList<>();
-            for (MovieCastingRequest movieCastingRequest : movieRequest.getCastings()) {
-                MovieCasting movieCasting = new MovieCasting();
-                movieCasting.setRole(movieCastingRequest.getRole());
-
-                Casting casting = castingService.getCastingById(movieCastingRequest.getCastingId());
-                movieCasting.setCasting(casting);
-
-                movieCastings.add(movieCasting);
-
-            }
-            Movie savedMovie = movieService.createMovie(movie);
-            createdMovies.add(savedMovie);
-        }
-
-        return createdMovies;
-    }
-    */
 
     @PutMapping("/{id}")
     public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Movie updatedMovie) {

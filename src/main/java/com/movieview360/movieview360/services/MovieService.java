@@ -1,6 +1,7 @@
 package com.movieview360.movieview360.services;
 
 import com.movieview360.movieview360.entities.Movie;
+import com.movieview360.movieview360.entities.MovieCategory;
 import com.movieview360.movieview360.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,4 +46,7 @@ public class MovieService {
         movieRepository.deleteById(id);
     }
 
+    public List<Movie> getMoviesByCategoryId(Long categoryId) {
+        return movieRepository.findByGenderId(categoryId);
+    }
 }
