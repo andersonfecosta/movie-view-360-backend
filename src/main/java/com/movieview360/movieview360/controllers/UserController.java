@@ -1,5 +1,6 @@
 package com.movieview360.movieview360.controllers;
 
+import com.movieview360.movieview360.entities.Movie;
 import com.movieview360.movieview360.entities.User;
 import com.movieview360.movieview360.request.UserRequest;
 import com.movieview360.movieview360.services.UserService;
@@ -60,5 +61,24 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{userId}/favorite-movies")
+    public ResponseEntity<List<Movie>> getFavoriteMovies(@PathVariable Long userId) {
+        List<Movie> favoriteMovies = userService.getFavoriteMovies(userId);
+        return ResponseEntity.ok(favoriteMovies);
+    }
+    @PostMapping("/{userId}/favorite-movies/{movieId}")
+    public ResponseEntity<String> addMovieToFavorites(@PathVariable Long userId, @PathVariable Long movieId) {
+        userService.addMovieToFavorites(userId, movieId);
+        return ResponseEntity.ok("Movie added to favorites");
+    }
+
+    @DeleteMapping("/{userId}/favorite-movies/{movieId}")
+    public ResponseEntity<String> removeMovieFromFavorites(
+            @PathVariable Long userId,
+            @PathVariable Long movieId) {
+        userService.removeMovieFromFavorites(userId, movieId);
+        return ResponseEntity.ok("Movie removed from favorites");
     }
 }

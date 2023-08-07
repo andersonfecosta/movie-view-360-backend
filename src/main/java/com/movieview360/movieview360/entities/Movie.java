@@ -39,7 +39,7 @@ public class Movie {
     private String imgUrl;
 
     @Column(nullable = false)
-    private boolean isFavorite;
+    private boolean isFavorite = false;
 
     @JsonBackReference
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
