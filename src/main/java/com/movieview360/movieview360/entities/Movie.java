@@ -2,7 +2,7 @@ package com.movieview360.movieview360.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -43,6 +43,6 @@ public class Movie {
 
     @JsonBackReference
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieCasting> castings = new ArrayList<>();
+    private List<MovieCasting> castings;
 
 }
