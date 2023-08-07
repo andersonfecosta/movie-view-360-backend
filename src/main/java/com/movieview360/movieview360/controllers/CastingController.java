@@ -34,6 +34,13 @@ public class CastingController {
         }
     }
 
+    @GetMapping("/autocomplete")
+    public ResponseEntity<List<Casting>> autocompleteCasting(@RequestParam("query") String query) {
+
+        List<Casting> castings = castingService.autocompleteCasting(query);
+        return ResponseEntity.ok(castings);
+    }
+
     public Casting convertCasting(CastingRequest castingRequest) {
         Casting casting = new Casting();
         casting.setName(castingRequest.getName());

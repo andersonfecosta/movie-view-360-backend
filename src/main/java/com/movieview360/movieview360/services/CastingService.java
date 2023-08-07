@@ -37,4 +37,8 @@ public class CastingService {
     public void deleteCasting(Long id) {
         castingRepository.deleteById(id);
     }
+
+    public List<Casting> autocompleteCasting(String query) {
+        return castingRepository.findByNameContainingIgnoreCase(query);
+    }
 }
