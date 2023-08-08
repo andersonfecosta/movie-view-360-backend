@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/movies")
@@ -118,12 +119,40 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Movie updatedMovie) {
-        Movie updatedMovieResult = movieService.updateMovie(id, updatedMovie);
-        if (updatedMovieResult != null) {
-            return ResponseEntity.ok(updatedMovieResult);
-        } else {
+    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        Movie existingMovie = movieService.getMovieById(id);
+
+        if (existingMovie == null) {
             return ResponseEntity.notFound().build();
+        }
+
+        applyUpdatesToMovie(existingMovie, updates);
+
+        Movie updatedMovie = movieService.updateMovie(id, existingMovie);
+        return ResponseEntity.ok(updatedMovie);
+
+    }
+
+    private void applyUpdatesToMovie(Movie movie, Map<String, Object> updates) {
+        if (updates.containsKey("title")) {
+            movie.setTitle((String) updates.get("title"));
+        }
+        if (updates.containsKey("description")) {
+            movie.setDescription((String) updates.get("description"));
+        }
+        if (updates.containsKey("releaseDate")) {
+            movie.setReleaseDate((Integer) updates.get("releaseDate"));
+        }
+        if (updates.containsKey("genderId")) {
+            Long genderId = (Long) updates.get("genderId");
+            MovieCategory category = movieCategoryService.getMovieCategoryById(genderId);
+            movie.setGender(category);
+        }
+        if (updates.containsKey("imgUrl")) {
+            movie.setImgUrl((String) updates.get("imgUrl"));
+        }
+        if (updates.containsKey("isFavorite")) {
+            movie.setFavorite((Boolean) updates.get("isFavorite"));
         }
     }
 
