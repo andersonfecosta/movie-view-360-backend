@@ -23,7 +23,7 @@ public class MovieView360Application {
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:4200/");
+				registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:4200/");
 			}
 		};
 	}
