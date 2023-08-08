@@ -1,8 +1,11 @@
 package com.movieview360.movieview360.services;
 
+import com.movieview360.movieview360.converters.MovieConverter;
+import com.movieview360.movieview360.entities.Casting;
 import com.movieview360.movieview360.entities.Movie;
 import com.movieview360.movieview360.entities.MovieCasting;
 import com.movieview360.movieview360.entities.MovieCategory;
+import com.movieview360.movieview360.repositories.MovieCategoryRepository;
 import com.movieview360.movieview360.repositories.MovieRepository;
 import com.movieview360.movieview360.request.MovieCastingRequest;
 import com.movieview360.movieview360.request.MovieRequest;
@@ -12,16 +15,24 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
 
-    private final MovieRepository movieRepository;
-
     @Autowired
-    public MovieService(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
-    }
+    private MovieRepository movieRepository;
+    @Autowired
+    private MovieCategoryRepository movieCategoryRepository;
+    @Autowired
+    private MovieCategoryService movieCategoryService;
+    @Autowired
+    private CastingService castingService;
+    @Autowired
+    private MovieCastingService movieCastingService;
+    @Autowired
+    private MovieConverter movieConverter;
 
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
@@ -56,21 +67,78 @@ public class MovieService {
         return movieRequest;
     }
 
-    public Movie createMovie(Movie movie) {
-        return movieRepository.save(movie);
-    }
 
-    public Movie updateMovie(Long id, Movie updatedMovie) {
-        Movie movie = movieRepository.findById(id).orElse(null);
-        if (movie != null) {
-            movie.setTitle(updatedMovie.getTitle());
-            movie.setDescription(updatedMovie.getDescription());
-            movie.setReleaseDate(updatedMovie.getReleaseDate());
-            movie.setGender(updatedMovie.getGender());
-            movie.setCastings(updatedMovie.getCastings());
-            return movieRepository.save(movie);
+    public List<Movie> createMovies(List<MovieRequest> movieRequests) {
+
+        List<Movie> createdMovies = new ArrayList<>();
+
+
+        for (MovieRequest movieRequest : movieRequests) {
+            Movie movie = movieConverter.convertToMovie(movieRequest);
+            movie.setTitle(movieRequest.getTitle());
+            movie.setDescription(movieRequest.getDescription());
+            movie.setReleaseDate(movieRequest.getReleaseDate());
+            MovieCategory category = movieCategoryService.getMovieCategoryById(movieRequest.getGenderId());
+            movie.setGender(category);
+            movie.setImgUrl(movieRequest.getImgUrl());
+            //movie.setFavorite(movieRequest.isFavorite());
+
+            List<MovieCasting> castings = new ArrayList<>();
+            for (MovieCastingRequest castRequest : movieRequest.getCastings()) {
+                Casting casting2 = castingService.getCastingById(castRequest.getCastingId());
+                Casting casting = new Casting();
+                casting.setName(casting2.getName());
+                casting.setPhotoUrl(casting2.getPhotoUrl());
+                casting = castingService.createCasting(casting);
+
+                MovieCasting movieCasting = new MovieCasting();
+                movieCasting.setMovie(movie);
+                movieCasting.setCasting(casting);
+                movieCasting.setRole(castRequest.getRole());
+
+                castings.add(movieCasting);
+            }
+
+            movie.setCastings(castings);
+
+            createdMovies.add(movie);
         }
-        return null;
+
+        List<Movie> savedMovies = movieRepository.saveAll(createdMovies);
+
+        List<MovieCastingRequest> castingRequests = movieRequests.stream()
+                .flatMap(movieRequest -> movieRequest.getCastings().stream())
+                .collect(Collectors.toList());
+
+        return savedMovies;
+    }
+    public Movie updateMovie(Long id, MovieRequest movieRequest) {
+        Optional<Movie> optionalMovie = movieRepository.findById(id);
+        if (optionalMovie.isEmpty()) {
+            return null;
+        }
+
+        Movie movieToUpdate = optionalMovie.get();
+
+
+        movieToUpdate.setTitle(movieRequest.getTitle());
+        movieToUpdate.setDescription(movieRequest.getDescription());
+        movieToUpdate.setReleaseDate(movieRequest.getReleaseDate());
+
+
+        if (movieRequest.getGenderId() != null) {
+            Optional<MovieCategory> optionalCategory = movieCategoryRepository.findById(movieRequest.getGenderId());
+            if (optionalCategory.isPresent()) {
+                movieToUpdate.setGender(optionalCategory.get());
+            } else {
+                return null;
+            }
+        }
+
+        movieToUpdate.setImgUrl(movieRequest.getImgUrl());
+        //movieToUpdate.setFavorite(movieRequest.isFavorite());
+
+        return movieRepository.save(movieToUpdate);
     }
     public void deleteMovie(Long id) {
         movieRepository.deleteById(id);

@@ -41,8 +41,8 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovieRequest> getMovieById(@PathVariable Long id) {
-        MovieRequest movie = movieService.getMovieRequestById(id);
+    public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
+        Movie movie = movieService.getMovieById(id);
         if (movie != null) {
             return ResponseEntity.ok(movie);
         } else {
@@ -61,79 +61,32 @@ public class MovieController {
         }
     }
 
-    private Movie convertToMovie(MovieRequest movieRequest) {
-        Movie movie = new Movie();
-        movie.setTitle(movieRequest.getTitle());
-        movie.setDescription(movieRequest.getDescription());
-        movie.setReleaseDate(movieRequest.getReleaseDate());
-        movie.setImgUrl(movieRequest.getImgUrl());
-        //movie.setFavorite(movieRequest.isFavorite());
 
-        MovieCategory movieCategory = new MovieCategory();
-        movie.setGender(movieCategory);
-
-        return movie;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Movie> createMovies(@RequestBody List<MovieRequest> movieRequests) {
-        List<Movie> createdMovies = new ArrayList<>();
+    public ResponseEntity<List<Movie>> createMovies(@RequestBody List<MovieRequest> movieRequests) {
+        List<Movie> createdMovies = movieService.createMovies(movieRequests);
 
-
-        for (MovieRequest movieRequest : movieRequests) {
-            Movie movie = convertToMovie(movieRequest);
-            movie.setTitle(movieRequest.getTitle());
-            movie.setDescription(movieRequest.getDescription());
-            movie.setReleaseDate(movieRequest.getReleaseDate());
-            MovieCategory category = movieCategoryService.getMovieCategoryById(movieRequest.getGenderId());
-            movie.setGender(category);
-            movie.setImgUrl(movieRequest.getImgUrl());
-            //movie.setFavorite(movieRequest.isFavorite());
-            movie = movieService.createMovie(movie);
-
-            List<MovieCasting> castings = new ArrayList<>();
-            for (MovieCastingRequest castRequest : movieRequest.getCastings()) {
-                Casting casting2 = castingService.getCastingById(castRequest.getCastingId());
-                Casting casting = new Casting();
-                casting.setName(casting2.getName());
-                casting.setPhotoUrl(casting2.getPhotoUrl());
-                casting = castingService.createCasting(casting);
-
-                MovieCasting movieCasting = new MovieCasting();
-                movieCasting.setMovie(movie);
-                movieCasting.setCasting(casting);
-                movieCasting.setRole(castRequest.getRole());
-
-                movieCastingService.createMovieCasting(movieCasting);
-
-                castings.add(movieCasting);
-            }
-
-            movie.setCastings(castings);
-
-            createdMovies.add(movie);
+        if (!movieRequests.isEmpty()) {
+            return ResponseEntity.ok(createdMovies);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-
-        return createdMovies;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        Movie existingMovie = movieService.getMovieById(id);
+    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody MovieRequest movieRequest) {
+        Movie movie = movieService.updateMovie(id, movieRequest);
 
-        if (existingMovie == null) {
+        if (movieRequest != null) {
+            return ResponseEntity.ok(movie);
+        } else {
             return ResponseEntity.notFound().build();
         }
-
-        applyUpdatesToMovie(existingMovie, updates);
-
-        Movie updatedMovie = movieService.updateMovie(id, existingMovie);
-        return ResponseEntity.ok(updatedMovie);
-
     }
 
-    private void applyUpdatesToMovie(Movie movie, Map<String, Object> updates) {
+    /*private void applyUpdatesToMovie(Movie, Map<String, Object> updates) {
         if (updates.containsKey("title")) {
             movie.setTitle((String) updates.get("title"));
         }
@@ -145,8 +98,8 @@ public class MovieController {
         }
         if (updates.containsKey("genderId")) {
             Long genderId = (Long) updates.get("genderId");
-            MovieCategory category = movieCategoryService.getMovieCategoryById(genderId);
-            movie.setGender(category);
+            MovieCategory gender = movieCategoryService.getMovieCategoryById(genderId);
+            movie.setGender(gender);
         }
         if (updates.containsKey("imgUrl")) {
             movie.setImgUrl((String) updates.get("imgUrl"));
@@ -161,5 +114,10 @@ public class MovieController {
         movieService.deleteMovie(id);
         return ResponseEntity.noContent().build();
     }
-
+    */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
+        movieService.deleteMovie(id);
+        return ResponseEntity.noContent().build();
+    }
 }

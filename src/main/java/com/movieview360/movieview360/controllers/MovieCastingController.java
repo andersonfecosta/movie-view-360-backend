@@ -1,6 +1,7 @@
 package com.movieview360.movieview360.controllers;
 
 import com.movieview360.movieview360.entities.MovieCasting;
+import com.movieview360.movieview360.request.MovieCastingRequest;
 import com.movieview360.movieview360.services.CastingService;
 import com.movieview360.movieview360.services.MovieCastingService;
 import com.movieview360.movieview360.services.MovieService;
@@ -43,17 +44,23 @@ public class MovieCastingController {
         }
     }
 
+    private MovieCasting convertToMovieCasting(MovieCastingRequest castingRequest) {
+        MovieCasting casting = new MovieCasting();
+        casting.setRole(castingRequest.getRole());
+
+
+        // casting.setCasting(castingEntity);
+        // casting.setMovie(movieEntity);
+
+        return casting;
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<MovieCasting> createMovieCastings(@RequestBody List<MovieCasting> castings) {
-        List<MovieCasting> createdCastings = new ArrayList<>();
+    public ResponseEntity<List<MovieCasting>> createMovieCastings(@RequestBody List<MovieCastingRequest> castingsRequest) {
+        List<MovieCastingRequest> createdCastings = new ArrayList<>();
 
-        for (MovieCasting casting : castings) {
-            MovieCasting savedCasting = movieCastingService.createMovieCasting(casting);
-            createdCastings.add(savedCasting);
-        }
-
-        return createdCastings;
+        return ResponseEntity.ok(movieCastingService.createMovieCastings(castingsRequest));
     }
 
     @PutMapping("/{id}")

@@ -10,6 +10,7 @@ import lombok.*;
 @EqualsAndHashCode
 public class MovieCastingRequest {
 
+    private Long movieId;
     private Long castingId;
     private Role role;
 
