@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class MovieRequest {
+
     private String title;
     private String description;
     private Integer releaseDate;

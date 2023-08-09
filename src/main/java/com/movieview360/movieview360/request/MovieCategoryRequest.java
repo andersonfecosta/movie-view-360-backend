@@ -11,7 +11,6 @@ import lombok.*;
 @EqualsAndHashCode
 public class MovieCategoryRequest {
 
-    private Long id;
     private String description;
 
 }

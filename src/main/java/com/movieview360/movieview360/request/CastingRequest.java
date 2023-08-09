@@ -10,7 +10,6 @@ import lombok.*;
 @EqualsAndHashCode
 public class CastingRequest {
 
-    private Long id;
     private String name;
     private String photoUrl;
 
