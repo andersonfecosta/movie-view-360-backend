@@ -1,12 +1,7 @@
 package com.movieview360.movieview360.controllers;
 
 
-import com.movieview360.movieview360.entities.Casting;
 import com.movieview360.movieview360.entities.Movie;
-import com.movieview360.movieview360.entities.MovieCasting;
-import com.movieview360.movieview360.entities.MovieCategory;
-import com.movieview360.movieview360.request.CastingRequest;
-import com.movieview360.movieview360.request.MovieCastingRequest;
 import com.movieview360.movieview360.request.MovieRequest;
 import com.movieview360.movieview360.services.CastingService;
 import com.movieview360.movieview360.services.MovieCastingService;
@@ -17,9 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/movies")

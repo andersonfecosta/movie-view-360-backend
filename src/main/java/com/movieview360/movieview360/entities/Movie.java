@@ -1,6 +1,7 @@
 package com.movieview360.movieview360.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import lombok.*;
@@ -38,6 +39,7 @@ public class Movie {
     @Column(nullable = false)
     private String imgUrl;
 
+    @JsonIgnore
     @Column(nullable = false)
     private boolean isFavorite = false;
 
