@@ -1,11 +1,12 @@
-package com.movieview360.movieview360.request;
+package com.movieview360.movieview360.response;
 
 import com.movieview360.movieview360.entities.Role;
-import lombok.*;
+import lombok.Data;
 
 @Data
-public class MovieCastingRequest {
+public class MovieCastingResponse {
 
+    private Long id;
     private Long movieId;
     private Long castingId;
     private Role role;
