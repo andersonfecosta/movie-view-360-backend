@@ -10,11 +10,7 @@ import lombok.*;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"movie_id", "casting_id"}),name = "tb_movie_casting")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@Data
 public class MovieCasting {
 
     @Id
@@ -30,11 +26,6 @@ public class MovieCasting {
     @ManyToOne
     @JoinColumn(name = "casting_id", nullable = false)
     private Casting casting;
-
-    @JsonProperty("castingName")
-    public String getCastingName() {
-        return casting.getName();
-    }
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -1,5 +1,7 @@
 package com.movieview360.movieview360.response;
 
+import com.movieview360.movieview360.entities.MovieCasting;
+import com.movieview360.movieview360.entities.MovieCategory;
 import com.movieview360.movieview360.request.MovieCastingRequest;
 import lombok.Data;
 
@@ -12,8 +14,9 @@ public class MovieResponse {
     private String title;
     private String description;
     private Integer releaseDate;
-    private Long genderId;
+    private MovieCategoryResponse gender;
     private String imgUrl;
     private boolean isFavorite;
-    private List<MovieCastingRequest> castings;
+    private List<MovieCastingResponse> castings;
 }
+

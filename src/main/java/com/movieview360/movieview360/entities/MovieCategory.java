@@ -24,11 +24,8 @@ public class MovieCategory {
     @Column(nullable = false)
     private String description;
 
-
     @JsonIgnore
     @OneToMany(mappedBy = "gender")
-    private List<Movie> movies;
-
-
+    private List<Movie> movies = new ArrayList<>();
 
 }

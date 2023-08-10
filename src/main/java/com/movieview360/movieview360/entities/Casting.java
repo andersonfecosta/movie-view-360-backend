@@ -29,6 +29,6 @@ public class Casting {
 
     @JsonBackReference
     @OneToMany(mappedBy = "casting", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieCasting> movieCastings;
+    private List<MovieCasting> movieCastings = new ArrayList<>();
 
 }

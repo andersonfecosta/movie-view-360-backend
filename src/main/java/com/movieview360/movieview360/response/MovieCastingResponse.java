@@ -7,8 +7,8 @@ import lombok.Data;
 public class MovieCastingResponse {
 
     private Long id;
-    private Long movieId;
-    private Long castingId;
+    private MovieResponse movie;
+    private CastingResponse casting;
     private Role role;
 
 }
