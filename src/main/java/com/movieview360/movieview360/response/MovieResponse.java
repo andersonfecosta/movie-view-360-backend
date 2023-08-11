@@ -17,7 +17,7 @@ public class MovieResponse {
     private Integer releaseDate;
     private MovieCategoryResponse gender;
     private String imgUrl;
-    private boolean isFavorite;
+    private boolean isFavorite = false;
     private List<MovieCastingResponse> castings;
 }
 

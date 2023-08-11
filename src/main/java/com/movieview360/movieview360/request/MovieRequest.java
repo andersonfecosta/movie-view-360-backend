@@ -12,6 +12,6 @@ public class MovieRequest {
     private Integer releaseDate;
     private Long genderId;
     private String imgUrl;
-    private boolean isFavorite;
+    //private boolean isFavorite;
     private List<MovieCastingRequest> castings;
 }
