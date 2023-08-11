@@ -10,11 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "tb_casting")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@Data
 public class Casting {
 
     @Id
@@ -30,5 +26,10 @@ public class Casting {
     @JsonBackReference
     @OneToMany(mappedBy = "casting", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieCasting> movieCastings = new ArrayList<>();
+
+    public void addMovieCasting(MovieCasting movieCasting) {
+        movieCastings.add(movieCasting);
+        movieCasting.setCasting(this);
+    }
 
 }

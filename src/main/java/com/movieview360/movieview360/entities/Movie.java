@@ -39,8 +39,13 @@ public class Movie {
     @Column(nullable = false)
     private boolean isFavorite = false;
 
-    @JsonBackReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieCasting> castings = new ArrayList<>();
+
+    public void addCasting(MovieCasting casting) {
+        castings.add(casting);
+        casting.setMovie(this);
+    }
 
 }

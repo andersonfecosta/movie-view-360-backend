@@ -11,28 +11,38 @@ import java.util.List;
 @Component
 public class EntityResponseConverter {
 
-    private final MovieConverter movieConverter;
-    private final MovieCategoryConverter movieCategoryConverter;
-    private final MovieCastingConverter movieCastingConverter;
-    private final CastingConverter castingConverter;
+    @Autowired
+    private MovieConverter movieConverter;
 
-    private final UserConverter userConverter;
+    @Autowired
+    private MovieCategoryConverter movieCategoryConverter;
 
-    public EntityResponseConverter(MovieConverter movieConverter, MovieCategoryConverter movieCategoryConverter, MovieCastingConverter movieCastingConverter, CastingConverter castingConverter, UserConverter userConverter) {
-        this.movieConverter = movieConverter;
-        this.movieCategoryConverter = movieCategoryConverter;
-        this.movieCastingConverter = movieCastingConverter;
-        this.castingConverter = castingConverter;
-        this.userConverter = userConverter;
-    }
+    @Autowired
+    private MovieCastingConverter movieCastingConverter;
+
+    @Autowired
+    private CastingConverter castingConverter;
+
+    @Autowired
+    private UserConverter userConverter;
 
     public MovieResponse convertToMovieResponse(Movie movie) {
+
+        System.out.println("convertToMovieResponse called for movie: " + movie.getId());
+
         MovieResponse movieResponse = new MovieResponse();
 
         movieResponse.setId(movie.getId());
         movieResponse.setTitle(movie.getTitle());
         movieResponse.setDescription(movie.getDescription());
         movieResponse.setReleaseDate(movie.getReleaseDate());
+        movieResponse.setGender(convertToMovieCategoryResponse(movie.getGender()));
+
+        List<MovieCastingResponse> movieCastingResponses = new ArrayList<>();
+        for (MovieCasting casting: movie.getCastings()) {
+            movieCastingResponses.add(convertToMovieCastingResponse(casting));
+        }
+        movieResponse.setCastings(movieCastingResponses);
 
         movieResponse.setImgUrl(movie.getImgUrl());
         movieResponse.setFavorite(movie.isFavorite());
@@ -41,6 +51,9 @@ public class EntityResponseConverter {
     }
 
     public MovieCategoryResponse convertToMovieCategoryResponse(MovieCategory movieCategory) {
+
+        System.out.println("convertToMovieCategoryResponse called for category: " + movieCategory.getId());
+
         MovieCategoryResponse movieCategoryResponse = new MovieCategoryResponse();
         movieCategoryResponse.setId(movieCategory.getId());
         movieCategoryResponse.setDescription(movieCategory.getDescription());
@@ -49,14 +62,35 @@ public class EntityResponseConverter {
     }
 
     public MovieCastingResponse convertToMovieCastingResponse(MovieCasting movieCasting) {
-        MovieCastingResponse movieCastingResponse = new MovieCastingResponse();
 
+        System.out.println("convertToMovieCastingResponse called for movieCasting: " + movieCasting.getId());
+
+        MovieCastingResponse movieCastingResponse = new MovieCastingResponse();
         movieCastingResponse.setId(movieCasting.getId());
 
-        CastingConverter castingConverter = new CastingConverter();
-        movieCastingResponse.setCasting(convertoToCastingResponse(movieCasting.getCasting()));
+        Casting casting = movieCasting.getCasting();
+        CastingResponse castingResponse = new CastingResponse();
+        castingResponse.setId(casting.getId());
+        castingResponse.setName(casting.getName());
+        castingResponse.setPhotoUrl(casting.getPhotoUrl());
+        movieCastingResponse.setCasting(castingResponse);
 
-        movieCastingResponse.setMovie(convertToMovieResponse(movieCasting.getMovie()));
+        Movie movie = movieCasting.getMovie();
+        MovieResponse movieResponse = new MovieResponse();
+        movieResponse.setId(movie.getId());
+        movieResponse.setTitle(movie.getTitle());
+        movieResponse.setDescription(movie.getDescription());
+        movieResponse.setReleaseDate(movie.getReleaseDate());
+
+        MovieCategory movieCategory = movie.getGender();
+        MovieCategoryResponse movieCategoryResponse = new MovieCategoryResponse();
+        movieCategoryResponse.setId(movieCategory.getId());
+        movieCategoryResponse.setDescription(movieCategory.getDescription());
+        movieResponse.setGender(movieCategoryResponse);
+
+        movieResponse.setImgUrl(movie.getImgUrl());
+        movieResponse.setFavorite(movie.isFavorite());
+        movieCastingResponse.setMovie(movieResponse);
 
         movieCastingResponse.setRole(movieCasting.getRole());
 
@@ -64,8 +98,10 @@ public class EntityResponseConverter {
     }
 
     public CastingResponse convertoToCastingResponse(Casting casting) {
-        CastingResponse castingResponse = new CastingResponse();
 
+        System.out.println("convertToCastingResponse called for casting: " + casting.getId());
+
+        CastingResponse castingResponse = new CastingResponse();
         castingResponse.setId(casting.getId());
         castingResponse.setName(casting.getName());
         castingResponse.setPhotoUrl(casting.getPhotoUrl());
@@ -73,8 +109,20 @@ public class EntityResponseConverter {
         List<MovieCastingResponse> list = new ArrayList<>();
         for (MovieCasting movieCasting : casting.getMovieCastings()) {
             MovieCastingResponse movieCastingResponse = new MovieCastingResponse();
-            MovieCastingConverter movieCastingConverter = new MovieCastingConverter();
-            movieCastingResponse = convertToMovieCastingResponse(movieCasting);
+            movieCastingResponse.setId(movieCasting.getId());
+            movieCastingResponse.setCasting(convertoToCastingResponse(movieCasting.getCasting()));
+            movieCastingResponse.setRole(movieCasting.getRole());
+            Movie movie = movieCasting.getMovie();
+            MovieResponse movieResponse = new MovieResponse();
+            movieResponse.setId(movie.getId());
+            movieResponse.setTitle(movie.getTitle());
+            movieResponse.setDescription(movie.getDescription());
+            movieResponse.setReleaseDate(movie.getReleaseDate());
+            movieResponse.setGender(convertToMovieCategoryResponse(movie.getGender()));
+            movieResponse.setImgUrl(movie.getImgUrl());
+            movieResponse.setFavorite(movie.isFavorite());
+            movieCastingResponse.setMovie(movieResponse);
+
             list.add(movieCastingResponse);
         }
 
@@ -84,6 +132,9 @@ public class EntityResponseConverter {
     }
 
     public UserResponse convertToUserResponse(User user) {
+
+        System.out.println("convertToUserResponse called for user: " + user.getId());
+
         UserResponse userResponse = new UserResponse();
 
         userResponse.setId(user.getId());

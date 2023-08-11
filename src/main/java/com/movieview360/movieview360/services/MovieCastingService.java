@@ -43,6 +43,10 @@ public class MovieCastingService {
             movieCasting.setRole(castingRequest.getRole());
 
             movieCastings.add(movieCasting);
+
+            movie.addCasting(movieCasting);
+
+            casting.addMovieCasting(movieCasting);
         }
         return movieCastings;
     }

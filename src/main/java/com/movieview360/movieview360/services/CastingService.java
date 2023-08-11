@@ -53,4 +53,8 @@ public class CastingService {
     public List<Casting> autocompleteCasting(String query) {
         return castingRepository.findByNameContainingIgnoreCase(query);
     }
+
+    public Casting saveCasting(Casting casting) {
+        return castingRepository.save(casting);
+    }
 }

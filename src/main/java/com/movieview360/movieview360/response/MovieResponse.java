@@ -1,5 +1,6 @@
 package com.movieview360.movieview360.response;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.movieview360.movieview360.entities.MovieCasting;
 import com.movieview360.movieview360.entities.MovieCategory;
 import com.movieview360.movieview360.request.MovieCastingRequest;
