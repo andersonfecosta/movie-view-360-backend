@@ -66,7 +66,7 @@ public class EntityResponseConverter {
         MovieCastingResponse movieCastingResponse = new MovieCastingResponse();
         movieCastingResponse.setId(movieCasting.getCasting().getId());
         movieCastingResponse.setName(movieCasting.getCasting().getName());
-        movieCastingResponse.setPhotoUrl(movieCasting.getCasting().getName());
+        movieCastingResponse.setPhotoUrl(movieCasting.getCasting().getPhotoUrl());
 
         movieCastingResponse.setRole(movieCasting.getRole());
 
