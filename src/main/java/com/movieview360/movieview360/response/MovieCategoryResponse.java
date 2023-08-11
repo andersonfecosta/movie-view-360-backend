@@ -11,6 +11,6 @@ public class MovieCategoryResponse {
 
     private Long id;
     private String description;
-    @JsonIgnore
-    private List<MovieResponse> movies;
+    //@JsonIgnore
+    //private List<MovieResponse> movies;
 }

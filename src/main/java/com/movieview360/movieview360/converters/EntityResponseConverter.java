@@ -13,16 +13,12 @@ public class EntityResponseConverter {
 
     @Autowired
     private MovieConverter movieConverter;
-
     @Autowired
     private MovieCategoryConverter movieCategoryConverter;
-
     @Autowired
     private MovieCastingConverter movieCastingConverter;
-
     @Autowired
     private CastingConverter castingConverter;
-
     @Autowired
     private UserConverter userConverter;
 
@@ -38,11 +34,13 @@ public class EntityResponseConverter {
         movieResponse.setReleaseDate(movie.getReleaseDate());
         movieResponse.setGender(convertToMovieCategoryResponse(movie.getGender()));
 
-        List<MovieCastingResponse> movieCastingResponses = new ArrayList<>();
+        List<MovieCastingResponse> castingResponses = new ArrayList<>();
         for (MovieCasting casting: movie.getCastings()) {
-            movieCastingResponses.add(convertToMovieCastingResponse(casting));
+            MovieCastingResponse castingResponse = convertToMovieCastingResponse(casting);
+            castingResponses.add(castingResponse);
         }
-        movieResponse.setCastings(movieCastingResponses);
+
+        movieResponse.setCastings(castingResponses);
 
         movieResponse.setImgUrl(movie.getImgUrl());
         movieResponse.setFavorite(movie.isFavorite());
@@ -66,33 +64,12 @@ public class EntityResponseConverter {
         System.out.println("convertToMovieCastingResponse called for movieCasting: " + movieCasting.getId());
 
         MovieCastingResponse movieCastingResponse = new MovieCastingResponse();
-        movieCastingResponse.setId(movieCasting.getId());
-
-        Casting casting = movieCasting.getCasting();
-        CastingResponse castingResponse = new CastingResponse();
-        castingResponse.setId(casting.getId());
-        castingResponse.setName(casting.getName());
-        castingResponse.setPhotoUrl(casting.getPhotoUrl());
-        movieCastingResponse.setCasting(castingResponse);
-
-        Movie movie = movieCasting.getMovie();
-        MovieResponse movieResponse = new MovieResponse();
-        movieResponse.setId(movie.getId());
-        movieResponse.setTitle(movie.getTitle());
-        movieResponse.setDescription(movie.getDescription());
-        movieResponse.setReleaseDate(movie.getReleaseDate());
-
-        MovieCategory movieCategory = movie.getGender();
-        MovieCategoryResponse movieCategoryResponse = new MovieCategoryResponse();
-        movieCategoryResponse.setId(movieCategory.getId());
-        movieCategoryResponse.setDescription(movieCategory.getDescription());
-        movieResponse.setGender(movieCategoryResponse);
-
-        movieResponse.setImgUrl(movie.getImgUrl());
-        movieResponse.setFavorite(movie.isFavorite());
-        movieCastingResponse.setMovie(movieResponse);
+        movieCastingResponse.setId(movieCasting.getCasting().getId());
+        movieCastingResponse.setName(movieCasting.getCasting().getName());
+        movieCastingResponse.setPhotoUrl(movieCasting.getCasting().getName());
 
         movieCastingResponse.setRole(movieCasting.getRole());
+
 
         return movieCastingResponse;
     }
@@ -105,28 +82,6 @@ public class EntityResponseConverter {
         castingResponse.setId(casting.getId());
         castingResponse.setName(casting.getName());
         castingResponse.setPhotoUrl(casting.getPhotoUrl());
-
-        List<MovieCastingResponse> list = new ArrayList<>();
-        for (MovieCasting movieCasting : casting.getMovieCastings()) {
-            MovieCastingResponse movieCastingResponse = new MovieCastingResponse();
-            movieCastingResponse.setId(movieCasting.getId());
-            movieCastingResponse.setCasting(convertoToCastingResponse(movieCasting.getCasting()));
-            movieCastingResponse.setRole(movieCasting.getRole());
-            Movie movie = movieCasting.getMovie();
-            MovieResponse movieResponse = new MovieResponse();
-            movieResponse.setId(movie.getId());
-            movieResponse.setTitle(movie.getTitle());
-            movieResponse.setDescription(movie.getDescription());
-            movieResponse.setReleaseDate(movie.getReleaseDate());
-            movieResponse.setGender(convertToMovieCategoryResponse(movie.getGender()));
-            movieResponse.setImgUrl(movie.getImgUrl());
-            movieResponse.setFavorite(movie.isFavorite());
-            movieCastingResponse.setMovie(movieResponse);
-
-            list.add(movieCastingResponse);
-        }
-
-        castingResponse.setMovieCastingResponses(list);
 
         return castingResponse;
     }
