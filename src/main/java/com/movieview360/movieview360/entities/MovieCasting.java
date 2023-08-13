@@ -1,20 +1,22 @@
 package com.movieview360.movieview360.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"movie_id", "casting_id"}),name = "tb_movie_casting")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"movie_id", "casting_id", "role"}),name = "tb_movie_casting")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class MovieCasting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Exclude
     private Long id;
 
     @JsonManagedReference

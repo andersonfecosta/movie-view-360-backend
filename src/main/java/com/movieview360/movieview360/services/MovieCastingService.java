@@ -7,7 +7,6 @@ import com.movieview360.movieview360.entities.Movie;
 import com.movieview360.movieview360.entities.MovieCasting;
 import com.movieview360.movieview360.repositories.MovieCastingRepository;
 import com.movieview360.movieview360.request.MovieCastingRequest;
-import com.movieview360.movieview360.response.MovieCastingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,10 +36,7 @@ public class MovieCastingService {
 
         for (MovieCastingRequest castingRequest : castingRequests) {
             Casting casting = castingService.getCastingById(castingRequest.getCastingId());
-            MovieCasting movieCasting = new MovieCasting();
-            movieCasting.setMovie(movie);
-            movieCasting.setCasting(casting);
-            movieCasting.setRole(castingRequest.getRole());
+            MovieCasting movieCasting = movieCastingConverter.convertToMovieCasting(castingRequest, movie, casting);
 
             movieCastings.add(movieCasting);
 

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -94,6 +95,8 @@ public class MovieService {
             movie.setDescription(movieRequest.getDescription());
             movie.setReleaseDate(movieRequest.getReleaseDate());
 
+            setMovieCastings(movie, movieRequest.getCastings());
+
             if (movieRequest.getGenderId() != null) {
                 Optional<MovieCategory> optionalCategory = movieCategoryRepository.findById(movieRequest.getGenderId());
                 if (optionalCategory.isPresent()) {
@@ -111,6 +114,28 @@ public class MovieService {
             return null;
         }
     }
+
+    private void setMovieCastings(Movie movie, List<MovieCastingRequest> movieCastings) {
+        movieCastings.stream()
+            .filter(movieCast -> !movie.getCastings().contains(movieCastingConverter
+                                    .convertToMovieCasting(movieCast, movie, Casting
+                                                                        .builder()
+                                                                        .id(movieCast.getCastingId())
+                                                                        .build())))
+            .forEach(movieCast -> movie.addCasting(movieCastingConverter
+                                    .convertToMovieCasting(movieCast, movie, Casting
+                                                                        .builder()
+                                                                        .id(movieCast.getCastingId())
+                                                                        .build())));
+
+        List<MovieCasting> movieCastingForDelete = movie.getCastings().stream()
+                .filter(movieCast -> !movieCastings.contains(movieCastingConverter
+                                    .convertToMovieCastingRequest(movieCast)))
+                .collect(Collectors.toList());
+        movieCastingForDelete.forEach(movieCast -> movie.removeCasting(movieCast));
+        movieCastingRepository.deleteAll(movieCastingForDelete);
+    }
+
     public void deleteMovie(Long id) {
         movieRepository.deleteById(id);
     }

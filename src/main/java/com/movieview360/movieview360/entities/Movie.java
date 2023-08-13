@@ -1,6 +1,5 @@
 package com.movieview360.movieview360.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
@@ -12,10 +11,12 @@ import java.util.List;
 @Entity
 @Table(name = "tb_movie")
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false)
@@ -48,4 +49,7 @@ public class Movie {
         casting.setMovie(this);
     }
 
+    public void removeCasting(MovieCasting casting){
+        castings.remove(casting);
+    }
 }
