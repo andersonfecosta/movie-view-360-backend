@@ -1,8 +1,11 @@
 package com.movieview360.movieview360.controllers;
 
 
+import com.movieview360.movieview360.converters.CastingConverter;
+import com.movieview360.movieview360.converters.EntityResponseConverter;
 import com.movieview360.movieview360.entities.Casting;
 import com.movieview360.movieview360.request.CastingRequest;
+import com.movieview360.movieview360.response.CastingResponse;
 import com.movieview360.movieview360.services.CastingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,55 +21,66 @@ public class CastingController {
 
     @Autowired
     private CastingService castingService;
+    @Autowired
+    private CastingConverter castingConverter;
+    @Autowired
+    private EntityResponseConverter entityResponseConverter;
 
     @GetMapping
-    public List<Casting> getAllCastings() {
-        return castingService.getAllCastings();
+    public List<CastingResponse> getAllCastings() {
+        List<CastingResponse> responses = new ArrayList<>();
+        List<Casting> castings = castingService.getAllCastings();
+
+        for (Casting casting: castings) {
+            responses.add(entityResponseConverter.convertoToCastingResponse(casting));
+        }
+
+        return responses;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Casting> getCastingById(@PathVariable Long id) {
+    public ResponseEntity<CastingResponse> getCastingById(@PathVariable Long id) {
         Casting casting = castingService.getCastingById(id);
+        CastingResponse response = entityResponseConverter.convertoToCastingResponse(casting);
         if (casting != null) {
-            return ResponseEntity.ok(casting);
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/autocomplete")
-    public ResponseEntity<List<Casting>> autocompleteCasting(@RequestParam("query") String query) {
+    public ResponseEntity<List<CastingResponse>> autocompleteCasting(@RequestParam("query") String query) {
 
         List<Casting> castings = castingService.autocompleteCasting(query);
-        return ResponseEntity.ok(castings);
-    }
+        List<CastingResponse> responses = new ArrayList<>();
 
-    public Casting convertCasting(CastingRequest castingRequest) {
-        Casting casting = new Casting();
-        casting.setName(castingRequest.getName());
-        casting.setPhotoUrl(castingRequest.getPhotoUrl());
-        return casting;
+        for (Casting casting: castings) {
+            responses.add(entityResponseConverter.convertoToCastingResponse(casting));
+        }
+
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Casting> createCastings(@RequestBody List<CastingRequest> castingRequests) {
-        List<Casting> createdCastings = new ArrayList<>();
+    public List<CastingResponse> createCastings(@RequestBody List<CastingRequest> castingRequests) {
+        List<Casting> createdCastings = castingService.createCasting(castingRequests);
+        List<CastingResponse> responses = new ArrayList<>();
 
-        for (CastingRequest castingRequest : castingRequests) {
-            Casting casting = convertCasting(castingRequest);
-            Casting savedCasting = castingService.createCasting(casting);
-            createdCastings.add(savedCasting);
+        for (Casting casting: createdCastings) {
+            responses.add(entityResponseConverter.convertoToCastingResponse(casting));
         }
 
-        return createdCastings;
+        return responses;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Casting> updateCasting(@PathVariable Long id, @RequestBody Casting updatedCasting) {
+    public ResponseEntity<CastingResponse> updateCasting(@PathVariable Long id, @RequestBody CastingRequest updatedCasting) {
         Casting updatedCastingResult = castingService.updateCasting(id, updatedCasting);
+        CastingResponse response = entityResponseConverter.convertoToCastingResponse(updatedCastingResult);
         if (updatedCastingResult != null) {
-            return ResponseEntity.ok(updatedCastingResult);
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }

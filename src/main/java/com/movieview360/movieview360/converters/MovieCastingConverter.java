@@ -9,21 +9,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class MovieCastingConverter {
 
-    public MovieCasting convertToMovieCasting(MovieCastingRequest castingRequest) {
-        MovieCasting movieCasting = new MovieCasting();
-
-        Movie movie = new Movie();
-        movie.setId(castingRequest.getMovieId());
-
-        Casting casting = new Casting();
-        casting.setId(castingRequest.getCastingId());
-
-        movieCasting.setMovie(movie);
-        movieCasting.setCasting(casting);
-        movieCasting.setRole(castingRequest.getRole());
-
-        return movieCasting;
+    public MovieCasting convertToMovieCasting(MovieCastingRequest castingRequest, Movie movie, Casting casting) {
+        return MovieCasting.builder()
+                .movie(movie)
+                .casting(casting)
+                .role(castingRequest.getRole())
+                .build();
     }
 
-
+    public MovieCastingRequest convertToMovieCastingRequest(MovieCasting movieCasting) {
+        return MovieCastingRequest.builder()
+                .castingId(movieCasting.getCasting().getId())
+                .movieId(movieCasting.getMovie().getId())
+                .role(movieCasting.getRole())
+                .build();
+    }
 }

@@ -8,11 +8,12 @@ import org.springframework.stereotype.Component;
 public class CastingConverter {
 
     public Casting castingConverter(CastingRequest castingRequest) {
-        Casting casting = new Casting();
-
-        casting.setName(castingRequest.getName());
-        casting.setPhotoUrl(castingRequest.getPhotoUrl());
-
-        return casting;
+        return Casting.builder()
+                .name(castingRequest.getName())
+                .photoUrl(castingRequest.getPhotoUrl())
+                .build();
     }
+
+
+
 }

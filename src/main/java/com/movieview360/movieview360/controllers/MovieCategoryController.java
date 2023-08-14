@@ -1,7 +1,11 @@
 package com.movieview360.movieview360.controllers;
 
 
+import com.movieview360.movieview360.converters.EntityResponseConverter;
+import com.movieview360.movieview360.converters.MovieCategoryConverter;
 import com.movieview360.movieview360.entities.MovieCategory;
+import com.movieview360.movieview360.request.MovieCategoryRequest;
+import com.movieview360.movieview360.response.MovieCategoryResponse;
 import com.movieview360.movieview360.services.MovieCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,42 +21,56 @@ public class MovieCategoryController {
 
     @Autowired
     private MovieCategoryService movieCategoryService;
+    @Autowired
+    private MovieCategoryConverter movieCategoryConverter;
+    @Autowired
+    private EntityResponseConverter entityResponseConverter;
 
     @GetMapping
-    public List<MovieCategory> getAllMovieCategories() {
-        return movieCategoryService.getAllMovieCategories();
+    public ResponseEntity<List<MovieCategoryResponse>> getAllMovieCategories() {
+        List<MovieCategory> movieCategories = movieCategoryService.getAllMovieCategories();
+        List<MovieCategoryResponse> responses = new ArrayList<>();
+
+        for(MovieCategory movieCategory: movieCategories) {
+            responses.add(entityResponseConverter.convertToMovieCategoryResponse(movieCategory));
+        }
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovieCategory> getMovieCategoryById(@PathVariable Long id) {
+    public ResponseEntity<MovieCategoryResponse> getMovieCategoryById(@PathVariable Long id) {
         MovieCategory movieCategory = movieCategoryService.getMovieCategoryById(id);
         if (movieCategory != null) {
-            return ResponseEntity.ok(movieCategory);
+            return ResponseEntity.ok(entityResponseConverter.convertToMovieCategoryResponse(movieCategory));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<MovieCategory> createMovieCategories(@RequestBody List<MovieCategory> categories) {
-        List<MovieCategory> createdCategories = new ArrayList<>();
+    public List<MovieCategoryResponse> createMovieCategories(@RequestBody List<MovieCategoryRequest> categories) {
+        List<MovieCategory> createdCategories = movieCategoryService.createMovieCategories(categories);
+        List<MovieCategoryResponse> responses = new ArrayList<>();
 
-        for (MovieCategory category : categories) {
-            MovieCategory savedCategory = movieCategoryService.createMovieCategory(category);
-            createdCategories.add(savedCategory);
+        for (MovieCategory movieCategory: createdCategories) {
+            responses.add(entityResponseConverter.convertToMovieCategoryResponse(movieCategory));
         }
 
-        return createdCategories;
+        return responses;
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<MovieCategory> updateMovieCategory(@PathVariable Long id, @RequestBody MovieCategory updatedMovieCategory) {
+    public ResponseEntity<MovieCategoryResponse> updateMovieCategory(@PathVariable Long id, @RequestBody MovieCategoryRequest updatedMovieCategory) {
         MovieCategory updatedMovieCategoryResult = movieCategoryService.updateMovieCategory(id, updatedMovieCategory);
+
         if (updatedMovieCategoryResult != null) {
-            return ResponseEntity.ok(updatedMovieCategoryResult);
+            return ResponseEntity.ok(entityResponseConverter.convertToMovieCategoryResponse(updatedMovieCategoryResult));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovieCategory(@PathVariable Long id) {
         movieCategoryService.deleteMovieCategory(id);

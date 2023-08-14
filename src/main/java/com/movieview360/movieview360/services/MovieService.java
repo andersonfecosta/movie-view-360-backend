@@ -1,10 +1,13 @@
 package com.movieview360.movieview360.services;
 
+import com.movieview360.movieview360.converters.MovieCastingConverter;
 import com.movieview360.movieview360.converters.MovieConverter;
 import com.movieview360.movieview360.entities.Casting;
 import com.movieview360.movieview360.entities.Movie;
 import com.movieview360.movieview360.entities.MovieCasting;
 import com.movieview360.movieview360.entities.MovieCategory;
+import com.movieview360.movieview360.repositories.CastingRepository;
+import com.movieview360.movieview360.repositories.MovieCastingRepository;
 import com.movieview360.movieview360.repositories.MovieCategoryRepository;
 import com.movieview360.movieview360.repositories.MovieRepository;
 import com.movieview360.movieview360.request.MovieCastingRequest;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -32,6 +36,12 @@ public class MovieService {
     private MovieCastingService movieCastingService;
     @Autowired
     private MovieConverter movieConverter;
+    @Autowired
+    private MovieCastingConverter movieCastingConverter;
+    @Autowired
+    private CastingRepository castingRepository;
+    @Autowired
+    private MovieCastingRepository movieCastingRepository;
 
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
@@ -62,34 +72,18 @@ public class MovieService {
             movie.setImgUrl(movieRequest.getImgUrl());
             //movie.setFavorite(movieRequest.isFavorite());
 
-            List<MovieCasting> castings = new ArrayList<>();
-            for (MovieCastingRequest castRequest : movieRequest.getCastings()) {
-                Casting casting2 = castingService.getCastingById(castRequest.getCastingId());
-                Casting casting = new Casting();
-                casting.setName(casting2.getName());
-                casting.setPhotoUrl(casting2.getPhotoUrl());
-                casting = castingService.createCasting(casting);
+            Movie savedMovie = movieRepository.save(movie);
 
-                MovieCasting movieCasting = new MovieCasting();
-                movieCasting.setMovie(movie);
-                movieCasting.setCasting(casting);
-                movieCasting.setRole(castRequest.getRole());
+            List<MovieCastingRequest> castingRequests = movieRequest.getCastings();
+            List<MovieCasting> castings = movieCastingService.createMovieCastings(castingRequests, savedMovie);
 
-                castings.add(movieCasting);
-            }
 
-            movie.setCastings(castings);
+            movieCastingRepository.saveAll(castings);
 
-            createdMovies.add(movie);
+            createdMovies.add(savedMovie);
+
         }
-
-        List<Movie> savedMovies = movieRepository.saveAll(createdMovies);
-
-        List<MovieCastingRequest> castingRequests = movieRequests.stream()
-                .flatMap(movieRequest -> movieRequest.getCastings().stream())
-                .toList();
-
-        return savedMovies;
+        return createdMovies;
     }
     public Movie updateMovie(Long id, MovieRequest movieRequest) {
         Optional<Movie> optionalMovie = movieRepository.findById(id);
@@ -100,6 +94,8 @@ public class MovieService {
             movie.setTitle(movieRequest.getTitle());
             movie.setDescription(movieRequest.getDescription());
             movie.setReleaseDate(movieRequest.getReleaseDate());
+
+            setMovieCastings(movie, movieRequest.getCastings());
 
             if (movieRequest.getGenderId() != null) {
                 Optional<MovieCategory> optionalCategory = movieCategoryRepository.findById(movieRequest.getGenderId());
@@ -118,6 +114,28 @@ public class MovieService {
             return null;
         }
     }
+
+    private void setMovieCastings(Movie movie, List<MovieCastingRequest> movieCastings) {
+        movieCastings.stream()
+            .filter(movieCast -> !movie.getCastings().contains(movieCastingConverter
+                                    .convertToMovieCasting(movieCast, movie, Casting
+                                                                        .builder()
+                                                                        .id(movieCast.getCastingId())
+                                                                        .build())))
+            .forEach(movieCast -> movie.addCasting(movieCastingConverter
+                                    .convertToMovieCasting(movieCast, movie, Casting
+                                                                        .builder()
+                                                                        .id(movieCast.getCastingId())
+                                                                        .build())));
+
+        List<MovieCasting> movieCastingForDelete = movie.getCastings().stream()
+                .filter(movieCast -> !movieCastings.contains(movieCastingConverter
+                                    .convertToMovieCastingRequest(movieCast)))
+                .collect(Collectors.toList());
+        movieCastingForDelete.forEach(movieCast -> movie.removeCasting(movieCast));
+        movieCastingRepository.deleteAll(movieCastingForDelete);
+    }
+
     public void deleteMovie(Long id) {
         movieRepository.deleteById(id);
     }

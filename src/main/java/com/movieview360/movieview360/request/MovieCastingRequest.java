@@ -3,16 +3,14 @@ package com.movieview360.movieview360.request;
 import com.movieview360.movieview360.entities.Role;
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Builder
 @AllArgsConstructor
-@EqualsAndHashCode
+@NoArgsConstructor
 public class MovieCastingRequest {
 
     private Long movieId;
     private Long castingId;
     private Role role;
-
 
 }

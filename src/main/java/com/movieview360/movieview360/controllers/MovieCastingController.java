@@ -1,7 +1,11 @@
 package com.movieview360.movieview360.controllers;
 
+import com.movieview360.movieview360.converters.EntityResponseConverter;
+import com.movieview360.movieview360.converters.MovieCastingConverter;
+import com.movieview360.movieview360.entities.Movie;
 import com.movieview360.movieview360.entities.MovieCasting;
 import com.movieview360.movieview360.request.MovieCastingRequest;
+import com.movieview360.movieview360.response.MovieCastingResponse;
 import com.movieview360.movieview360.services.CastingService;
 import com.movieview360.movieview360.services.MovieCastingService;
 import com.movieview360.movieview360.services.MovieService;
@@ -17,55 +21,58 @@ import java.util.List;
 @RequestMapping(value = "/movie-castings")
 public class MovieCastingController {
 
-    private final MovieCastingService movieCastingService;
-    private final CastingService castingService;
-    private final MovieService movieService;
-
-    public MovieCastingController(MovieCastingService movieCastingService, CastingService castingService, MovieService movieService) {
-        this.movieCastingService = movieCastingService;
-        this.castingService = castingService;
-        this.movieService = movieService;
-    }
-
-
+    @Autowired
+    private MovieCastingService movieCastingService;
+    @Autowired
+    private CastingService castingService;
+    @Autowired
+    private MovieService movieService;
+    @Autowired
+    private MovieCastingConverter movieCastingConverter;
+    @Autowired
+    private EntityResponseConverter entityResponseConverter;
 
     @GetMapping
-    public List<MovieCasting> getAllMovieCastings() {
-        return movieCastingService.getAllMovieCastings();
+    public List<MovieCastingResponse> getAllMovieCastings() {
+        List<MovieCasting> movieCastings = movieCastingService.getAllMovieCastings();
+        List<MovieCastingResponse> responses = new ArrayList<>();
+
+        for (MovieCasting movieCasting: movieCastings) {
+            responses.add(entityResponseConverter.convertToMovieCastingResponse(movieCasting));
+        }
+
+        return responses;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovieCasting> getMovieCastingById(@PathVariable Long id) {
+    public ResponseEntity<MovieCastingResponse> getMovieCastingById(@PathVariable Long id) {
         MovieCasting movieCasting = movieCastingService.getMovieCastingById(id);
         if (movieCasting != null) {
-            return ResponseEntity.ok(movieCasting);
+            return ResponseEntity.ok(entityResponseConverter.convertToMovieCastingResponse(movieCasting));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    private MovieCasting convertToMovieCasting(MovieCastingRequest castingRequest) {
-        MovieCasting casting = new MovieCasting();
-        casting.setRole(castingRequest.getRole());
-
-
-        // casting.setCasting(castingEntity);
-        // casting.setMovie(movieEntity);
-
-        return casting;
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<MovieCasting>> createMovieCastings(@RequestBody List<MovieCastingRequest> castingsRequest) {
-        List<MovieCastingRequest> createdCastings = new ArrayList<>();
+    public ResponseEntity<List<MovieCastingResponse>> createMovieCastings(@RequestBody List<MovieCastingRequest> castingsRequest,@PathVariable Long movieId) {
+        List<MovieCastingResponse> createdCastings = new ArrayList<>();
+        Movie movie = movieService.getMovieById(movieId);
+        List<MovieCasting> movieCastings = movieCastingService.createMovieCastings(castingsRequest, movie);
 
-        return ResponseEntity.ok(movieCastingService.createMovieCastings(castingsRequest));
+        for (MovieCasting movieCasting: movieCastings) {
+            createdCastings.add(entityResponseConverter.convertToMovieCastingResponse(movieCasting));
+        }
+
+        return ResponseEntity.ok(createdCastings);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MovieCasting> updateMovieCasting(@PathVariable Long id, @RequestBody MovieCasting updatedMovieCasting) {
-        MovieCasting updatedMovieCastingResult = movieCastingService.updateMovieCasting(id, updatedMovieCasting);
+    public ResponseEntity<MovieCastingResponse> updateMovieCasting(@PathVariable Long id, @RequestBody MovieCastingRequest updatedMovieCasting) {
+        MovieCastingResponse updatedMovieCastingResult = new MovieCastingResponse();
+        updatedMovieCastingResult = entityResponseConverter.convertToMovieCastingResponse(movieCastingService.updateMovieCasting(id, updatedMovieCasting));
+
         if (updatedMovieCastingResult != null) {
             return ResponseEntity.ok(updatedMovieCastingResult);
         } else {
