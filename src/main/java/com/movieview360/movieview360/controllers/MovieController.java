@@ -65,16 +65,15 @@ public class MovieController {
     @GetMapping("/by-gender")
     public ResponseEntity<List<MovieResponse>> getMoviesByCategoryId(@RequestParam("categoryId") Long categoryId) {
         List<Movie> movies = movieService.getMoviesByCategoryId(categoryId);
-        List<MovieResponse> responses = new ArrayList<>();
-
-        for (Movie movie: movies) {
-            responses.add(entityResponseConverter.convertToMovieResponse(movie));
-        }
 
         if (!movies.isEmpty()) {
+            List<MovieResponse> responses = new ArrayList<>();
+            for (Movie movie: movies) {
+                responses.add(entityResponseConverter.convertToMovieResponse(movie));
+            }
             return ResponseEntity.ok(responses);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
