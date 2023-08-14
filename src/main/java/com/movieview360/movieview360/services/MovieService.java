@@ -77,7 +77,6 @@ public class MovieService {
             List<MovieCastingRequest> castingRequests = movieRequest.getCastings();
             List<MovieCasting> castings = movieCastingService.createMovieCastings(castingRequests, savedMovie);
 
-
             movieCastingRepository.saveAll(castings);
 
             createdMovies.add(savedMovie);
@@ -143,4 +142,5 @@ public class MovieService {
     public List<Movie> getMoviesByCategoryId(Long categoryId) {
         return movieRepository.findByGenderId(categoryId);
     }
+
 }
