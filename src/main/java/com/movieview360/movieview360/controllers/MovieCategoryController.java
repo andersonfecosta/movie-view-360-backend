@@ -44,7 +44,7 @@ public class MovieCategoryController {
         if (movieCategory != null) {
             return ResponseEntity.ok(entityResponseConverter.convertToMovieCategoryResponse(movieCategory));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
     @PostMapping
@@ -67,7 +67,7 @@ public class MovieCategoryController {
         if (updatedMovieCategoryResult != null) {
             return ResponseEntity.ok(entityResponseConverter.convertToMovieCategoryResponse(updatedMovieCategoryResult));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
