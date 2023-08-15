@@ -1,4 +1,4 @@
-package com.movieview360.movieview360.config;
+package com.movieview360.movieview360.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
