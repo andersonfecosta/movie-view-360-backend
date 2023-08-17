@@ -10,11 +10,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "tb_category")
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Builder
 @AllArgsConstructor
-@EqualsAndHashCode
+@NoArgsConstructor
 public class MovieCategory {
 
     @Id

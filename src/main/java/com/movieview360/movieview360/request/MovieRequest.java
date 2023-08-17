@@ -5,6 +5,9 @@ import lombok.*;
 import java.util.List;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MovieRequest {
 
     private String title;
