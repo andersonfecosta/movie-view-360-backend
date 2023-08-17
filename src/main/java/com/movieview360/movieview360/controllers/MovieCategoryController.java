@@ -7,6 +7,7 @@ import com.movieview360.movieview360.entities.MovieCategory;
 import com.movieview360.movieview360.request.MovieCategoryRequest;
 import com.movieview360.movieview360.response.MovieCategoryResponse;
 import com.movieview360.movieview360.services.MovieCategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/categories")
+@SecurityRequirement(name = "bearerAuth")
 public class MovieCategoryController {
 
     @Autowired

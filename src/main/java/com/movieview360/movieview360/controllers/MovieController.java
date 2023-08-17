@@ -12,6 +12,7 @@ import com.movieview360.movieview360.services.CastingService;
 import com.movieview360.movieview360.services.MovieCastingService;
 import com.movieview360.movieview360.services.MovieCategoryService;
 import com.movieview360.movieview360.services.MovieService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/movies")
+@SecurityRequirement(name = "bearerAuth")
 public class MovieController {
 
     @Autowired
