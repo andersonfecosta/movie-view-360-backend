@@ -45,7 +45,7 @@ public class CastingController {
         if (casting != null) {
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
@@ -79,10 +79,11 @@ public class CastingController {
     public ResponseEntity<CastingResponse> updateCasting(@PathVariable Long id, @RequestBody CastingRequest updatedCasting) {
         Casting updatedCastingResult = castingService.updateCasting(id, updatedCasting);
         CastingResponse response = entityResponseConverter.convertoToCastingResponse(updatedCastingResult);
+
         if (updatedCastingResult != null) {
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 

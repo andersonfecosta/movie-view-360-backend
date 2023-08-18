@@ -37,7 +37,7 @@ public class UserController {
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
     @PostMapping
@@ -53,7 +53,7 @@ public class UserController {
         if (updatedUserResult != null) {
             return ResponseEntity.ok(updatedUserResult);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 

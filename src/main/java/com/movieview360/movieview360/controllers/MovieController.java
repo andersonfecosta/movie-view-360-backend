@@ -58,41 +58,40 @@ public class MovieController {
         if (movie != null) {
             return ResponseEntity.ok(entityResponseConverter.convertToMovieResponse(movie));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
     @GetMapping("/by-gender")
     public ResponseEntity<List<MovieResponse>> getMoviesByCategoryId(@RequestParam("categoryId") Long categoryId) {
         List<Movie> movies = movieService.getMoviesByCategoryId(categoryId);
-        List<MovieResponse> responses = new ArrayList<>();
-
-        for (Movie movie: movies) {
-            responses.add(entityResponseConverter.convertToMovieResponse(movie));
-        }
 
         if (!movies.isEmpty()) {
+            List<MovieResponse> responses = new ArrayList<>();
+            for (Movie movie: movies) {
+                responses.add(entityResponseConverter.convertToMovieResponse(movie));
+            }
             return ResponseEntity.ok(responses);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<List<MovieResponse>> createMovies(@RequestBody List<MovieRequest> movieRequests) {
-        List<Movie> createdMovies = movieService.createMovies(movieRequests);
 
+        if (movieRequests.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        List<Movie> createdMovies = movieService.createMovies(movieRequests);
         List<MovieResponse> responses = new ArrayList<>();
 
         for (Movie movie: createdMovies) {
             responses.add(entityResponseConverter.convertToMovieResponse(movie));
         }
-        if (!movieRequests.isEmpty()) {
-            return ResponseEntity.ok(responses);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(responses);
     }
 
     @PutMapping("/{id}")
@@ -102,7 +101,7 @@ public class MovieController {
         if (movieRequest != null) {
             return ResponseEntity.ok(entityResponseConverter.convertToMovieResponse(movie));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 

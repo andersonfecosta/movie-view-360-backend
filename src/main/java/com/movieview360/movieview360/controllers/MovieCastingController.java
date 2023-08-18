@@ -50,7 +50,7 @@ public class MovieCastingController {
         if (movieCasting != null) {
             return ResponseEntity.ok(entityResponseConverter.convertToMovieCastingResponse(movieCasting));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
@@ -76,7 +76,7 @@ public class MovieCastingController {
         if (updatedMovieCastingResult != null) {
             return ResponseEntity.ok(updatedMovieCastingResult);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
