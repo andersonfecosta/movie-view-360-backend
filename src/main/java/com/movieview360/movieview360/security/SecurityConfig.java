@@ -46,7 +46,8 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(new AntPathRequestMatcher("/auth/login")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/users/create")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/users")).hasRole("ADMIN")
+                                //.requestMatchers(new AntPathRequestMatcher("/users")).hasRole("ADMIN")
+                                //swagger
                                 .requestMatchers(new AntPathRequestMatcher("/configuration/ui")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/configuration/security")).permitAll()
@@ -54,8 +55,17 @@ public class SecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/*")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+
                                 .requestMatchers(new AntPathRequestMatcher("**", HttpMethod.DELETE.name())).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/castings", HttpMethod.POST.name())).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/castings", HttpMethod.PUT.name())).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/movie-castings", HttpMethod.PUT.name())).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/movie-castings", HttpMethod.POST.name())).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/categories", HttpMethod.POST.name())).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/categories", HttpMethod.PUT.name())).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/movies", HttpMethod.PUT.name())).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/movies", HttpMethod.POST.name())).hasRole("ADMIN")
+
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
