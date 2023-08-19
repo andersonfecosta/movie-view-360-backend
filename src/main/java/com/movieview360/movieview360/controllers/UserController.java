@@ -23,7 +23,7 @@ public class UserController {
     @Autowired
     private UserConverter userConverter;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
@@ -34,7 +34,7 @@ public class UserController {
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
     @PostMapping("/create")
@@ -46,11 +46,11 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        User updatedUserResult = userService.updateUser(id, updatedUser);
-        if (updatedUserResult != null) {
-            return ResponseEntity.ok(updatedUserResult);
+        User user = userService.getUserById(id);
+        if (user != null) {
+            return ResponseEntity.ok(user);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
     }
 
@@ -63,7 +63,11 @@ public class UserController {
     @GetMapping("/{userId}/favorite-movies")
     public ResponseEntity<List<Movie>> getFavoriteMovies(@PathVariable Long userId) {
         List<Movie> favoriteMovies = userService.getFavoriteMovies(userId);
-        return ResponseEntity.ok(favoriteMovies);
+        if (!favoriteMovies.isEmpty()) {
+            return ResponseEntity.ok(favoriteMovies);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
     @PostMapping("/{userId}/favorite-movies/{movieId}")
     public ResponseEntity<String> addMovieToFavorites(@PathVariable Long userId, @PathVariable Long movieId) {
@@ -71,7 +75,7 @@ public class UserController {
         return ResponseEntity.ok("Movie added to favorites");
     }
 
-    @DeleteMapping("/{userId}/favorite-movies/{movieId}")
+    @DeleteMapping("/{userId}/favorite-movies/{movieId}/remove")
     public ResponseEntity<String> removeMovieFromFavorites(
             @PathVariable Long userId,
             @PathVariable Long movieId) {

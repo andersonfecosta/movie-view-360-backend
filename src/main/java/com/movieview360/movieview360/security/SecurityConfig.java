@@ -44,19 +44,26 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(new AntPathRequestMatcher("/auth/login")).permitAll()
+                                /*.requestMatchers(new AntPathRequestMatcher("/auth/login")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/users/create")).permitAll()
-                                //.requestMatchers(new AntPathRequestMatcher("/users")).hasRole("ADMIN")
-                                //swagger
-                                .requestMatchers(new AntPathRequestMatcher("/configuration/ui")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/users/all")).hasRole("ADMIN")
+
+                                 */
+                                .antMatchers("/auth/login").permitAll()
+                                .antMatchers("/users/create").permitAll()
+                                .antMatchers("/users/all").hasRole("ADMIN")
+
+                                /*.requestMatchers(new AntPathRequestMatcher("/configuration/ui")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/configuration/security")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/*")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/**")).permitAll()
+                                 */
+                                .antMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
 
-                                .requestMatchers(new AntPathRequestMatcher("**", HttpMethod.DELETE.name())).hasRole("ADMIN")
+                                /*.requestMatchers(new AntPathRequestMatcher("**", HttpMethod.DELETE.name())).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/castings", HttpMethod.POST.name())).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/castings", HttpMethod.PUT.name())).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/movie-castings", HttpMethod.PUT.name())).hasRole("ADMIN")
@@ -65,6 +72,9 @@ public class SecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/categories", HttpMethod.PUT.name())).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/movies", HttpMethod.PUT.name())).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/movies", HttpMethod.POST.name())).hasRole("ADMIN")
+                                 */
+                                .antMatchers(HttpMethod.POST, "/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
+                                .antMatchers(HttpMethod.PUT, "/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
 
                                 .anyRequest().authenticated()
                 )
