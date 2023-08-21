@@ -82,6 +82,7 @@ public class MovieService {
             createdMovies.add(savedMovie);
 
         }
+
         return createdMovies;
     }
     public Movie updateMovie(Long id, MovieRequest movieRequest) {

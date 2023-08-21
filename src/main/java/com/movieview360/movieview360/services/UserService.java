@@ -75,8 +75,6 @@ public class UserService {
                 user.getFavoriteMovies().add(movie);
                 movie.setFavorite(true);
                 userRepository.save(user);
-            }else {
-                throw new AccessDeniedException("Access denied");
             }
         }
     }
@@ -96,15 +94,12 @@ public class UserService {
     }
 
     public List<Movie> getFavoriteMovies(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            if (isAuthorized(userId)) {
-                return user.getFavoriteMovies();
-            } else {
-                throw new AccessDeniedException("Access denied");
+        if (isAuthorized(userId)) {
+            User user = userRepository.findById(userId).orElse(null);
+                if (user != null) {
+                    return user.getFavoriteMovies();
+                }
             }
-        } else {
-            return new ArrayList<>();
-        }
+        return new ArrayList<>();
     }
 }
