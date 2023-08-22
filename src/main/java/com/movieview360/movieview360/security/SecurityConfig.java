@@ -1,35 +1,18 @@
 package com.movieview360.movieview360.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
 @Configuration
@@ -44,35 +27,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                /*.requestMatchers(new AntPathRequestMatcher("/auth/login")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/users/create")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/users/all")).hasRole("ADMIN")
-
-                                 */
                                 .antMatchers("/auth/login").permitAll()
                                 .antMatchers("/users/create").permitAll()
                                 .antMatchers("/users/all").hasRole("ADMIN")
 
-                                /*.requestMatchers(new AntPathRequestMatcher("/configuration/ui")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/configuration/security")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/swagger-ui/*")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/v3/**")).permitAll()
-                                 */
                                 .antMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
 
-                                /*.requestMatchers(new AntPathRequestMatcher("**", HttpMethod.DELETE.name())).hasRole("ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/castings", HttpMethod.POST.name())).hasRole("ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/castings", HttpMethod.PUT.name())).hasRole("ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/movie-castings", HttpMethod.PUT.name())).hasRole("ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/movie-castings", HttpMethod.POST.name())).hasRole("ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/categories", HttpMethod.POST.name())).hasRole("ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/categories", HttpMethod.PUT.name())).hasRole("ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/movies", HttpMethod.PUT.name())).hasRole("ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/movies", HttpMethod.POST.name())).hasRole("ADMIN")
-                                 */
+                                .antMatchers(HttpMethod.DELETE,"/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.POST, "/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.PUT, "/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
 
