@@ -31,11 +31,13 @@ public class SecurityConfig {
                                 .antMatchers("/users/create").permitAll()
                                 .antMatchers("/users/all").hasRole("ADMIN")
 
-                                .antMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                                .antMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**",
+                                        "/webjars/**", "/configuration/security", "/swagger-ui.html", "/v3/**").permitAll()
 
                                 .antMatchers(HttpMethod.DELETE,"/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.POST, "/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.PUT, "/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
+                                .antMatchers(HttpMethod.OPTIONS).permitAll()
 
                                 .anyRequest().authenticated()
                 )
