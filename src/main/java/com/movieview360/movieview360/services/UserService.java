@@ -23,6 +23,13 @@ public class UserService {
     @Autowired
     private MovieRepository movieRepository;
 
+    public boolean isUsernameUnique(String username) {
+        return userRepository.findByUsername(username) == null;
+    }
+    public boolean isEmailUnique(String email) {
+        return userRepository.findByEmail(email) == null;
+    }
+
     public boolean isAuthorized(Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) ||

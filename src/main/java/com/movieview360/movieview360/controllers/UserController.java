@@ -42,9 +42,25 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }
     }
+    @GetMapping("/check-username")
+    public ResponseEntity<Boolean> checkUsername(@RequestParam String username) {
+        boolean isUsernameUnique = userService.isUsernameUnique(username);
+        return ResponseEntity.ok(isUsernameUnique);
+    }
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+        boolean isEmailUnique = userService.isEmailUnique(email);
+        return ResponseEntity.ok(isEmailUnique);
+    }
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody UserRequest userRequest) {
         User createdUser = userConverter.convertToUser(userRequest);
+        if (!userService.isUsernameUnique(createdUser.getUsername())) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+        if (!userService.isEmailUnique(createdUser.getEmail())) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
         User user = userService.createUser(createdUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
