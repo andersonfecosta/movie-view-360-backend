@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .antMatchers("/auth/login").permitAll()
-                                .antMatchers("/users/create").permitAll()
+                                .antMatchers("/users/create","/users/check-email","/users/check-username").permitAll()
                                 .antMatchers("/users/all").hasRole("ADMIN")
 
                                 .antMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**",
@@ -36,7 +36,7 @@ public class SecurityConfig {
 
                                 .antMatchers(HttpMethod.DELETE,"/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.POST, "/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
-                                .antMatchers(HttpMethod.PUT, "/castings", "/movie-castings", "/categories", "/movies").hasRole("ADMIN")
+                                .antMatchers(HttpMethod.PUT, "/castings", "/movie-castings", "/categories", "/movies","/users/{id}").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.OPTIONS).permitAll()
 
                                 .anyRequest().authenticated()
