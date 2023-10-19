@@ -50,8 +50,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        User user = userService.getUserById(id);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserRequest updatedUser) {
+        User upUser = userConverter.convertToUser(updatedUser);
+        User user = userService.updateUser(id, upUser);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
@@ -76,7 +77,7 @@ public class UserController {
         if (!favoriteMovies.isEmpty()) {
             return ResponseEntity.ok(responses);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.noContent().build();
         }
     }
     @PostMapping("/{userId}/favorite-movies/{movieId}")
